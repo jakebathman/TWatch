@@ -8,6 +8,36 @@ If you have any problems of suggestions, open a new issue: https://github.com/ja
 
 Happy streaming!
 
+## Tampermonkey
+
+This is designed to be used with the Chrome extension Tampermonkey. 
+
+You can install it here: https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo
+
+## How do I set my own users and words?
+1. In Chrome, click on the Tampermonkey extension icon 
+2. You should see a list of your installed user scripts
+3. Click **TWatch: Twitch Chat Watcher**
+4. Scroll down to the line that says `var TWatch = {`
+5. A bit below that, you'll see three things that you can change:
+```
+    watchTheseUsers: [
+        'user1', 'user2',
+    ],
+    
+    watchTheseWords: [
+        'word1', 'word2',
+    ],
+
+    mentionTimeout: 0,
+    wordTimeout: 0,
+    userTimeout: 0,
+```
+
+Add your own items to the user and words list, making sure that they have `'` quotes around them and are separated by a comma.
+
+The `Timeout` settings are okay as 0, and you can read the comments in the file to learn more about what they do.
+
 ## Settings backup
 
 ### OH MY GOD WHERE DID MY SETTINGS GO?!!
