@@ -1,10 +1,10 @@
-
 // ==UserScript==
 // @name         TWatch: Twitch Chat Watcher
-// @namespace    http://tampermonkey.net/
-// @version      v1.0.0
-// @description  Watch Twitch chat for certain users, any @mentions of you, or certain watched words, and play a sound/alert when one is posted. HUGE thanks to
+// @namespace    https://github.com/jakebathman/TWatch
+// @version      v1.0.2
+// @description  Watch Twitch chat for certain users, any @mentions of you, or certain watched words, and play a sound/alert when one is posted. HUGE thanks to ihavebeenasleep for his script AntiKappa, which was very helpful in building this one.
 // @author       Jake Bathman (Twitter: @jakebathman, Reddit: /u/ironrectangle, Twitch: jakebathman)
+// @supportURL   https://github.com/jakebathman/TWatch/issues
 // @include      http*://www.twitch.tv*
 // @require      https://code.jquery.com/jquery-latest.js
 // @require      https://cdn.jsdelivr.net/npm/alertifyjs@1.11.1/build/alertify.min.js
@@ -14,30 +14,64 @@
 // ==/UserScript==
 /* jshint -W097 */
 
+/***
+
+   OH MY GOD WHERE DID MY SETTINGS GO?!!
+
+   If you updated this script from an older version, the "config" section below might not have your stuff anymore.
+
+   This is a crappy side effect of Tampermonkey scripts, and there's not a very good way to handle it.
+
+   BUT: We might be able to get them back. Follow these steps:
+
+     1. Go to twitch.tv
+     2. Open up DevTools Console by pressing F12 or right-clicking the page and selecting "Inspect"
+     3. Click the "Application" tab at the top (it might be hiding behind the >> icon)
+     4. Expand the "Local Storage" section
+     5. Find the "Key" called "TWatchSettings:v1.0.0" (if there are multiple, find the highest version number)
+     6. Copy the "Value" next to that key and paste below into the "config" section, like this:
+
+        var Twatch = {
+          config:
+          {
+            // Paste it here, removing any duplicate keys like "watchTheseUsers" that already exist
+          },
+
+          ...
+        }
+
+   Hopefully this works, and I'm sorry if it didn't. Again, there's not a very good way to handle user configs when a script needs updating.
+
+   If you have trouble, find me on Twitter @jakebathman or open an issue on GitHub at https://github.com/jakebathman/TWatch/issues
+
+***/
+
 var TWatch = {
+    config:
+    {
+        //  || ||                                || ||
+        //  || ||   CHANGE SETTINGS BELOW HERE   || ||
+        //  \/ \/                                \/ \/
 
-    //  || ||                                || ||
-    //  || ||   CHANGE SETTINGS BELOW HERE   || ||
-    //  \/ \/                                \/ \/
+        // Any user here will be watched for a post (based on their name in-chat)
+        // This is case-insensitive (e.g. "JaKebAThmAn" works for "jakebathman")
+        watchTheseUsers: [
+            'ironrectangle', 'supertravtastic', 'ninja', 'dakotaz', 'drlupo', 'timthetatman', 'mrsdrlupo',
+        ],
 
-    // Any user here will be watched for a post (based on their name in-chat)
-    // This is case-insensitive (e.g. "JaKebAThmAn" works for "jakebathman")
-    watchTheseUsers: [
-        'jakebathman', 'drlupo',
-    ],
+        // Any word here will be watched in any chat message
+        // This is also case-insensitive
+        watchTheseWords: [
+            'bathman',
+        ],
 
-    // Any word here will be watched in any chat message
-    // This is also case-insensitive
-    watchTheseWords: [
-        'giveaway', 'clip.twitch.tv',
-    ],
-
-    // By default, alerts will never auto-dismiss. This means you have to click each message to make it go away
-    // If you want certain alerts to go away automatically, put the number of seconds below for that
-    // type of alert (e.g. "mentionTimeout: 5" will dismiss alerts of @mentions of you after 5 seconds)
-    mentionTimeout: 0,
-    wordTimeout: 0,
-    userTimeout: 0,
+        // By default, alerts will never auto-dismiss. This means you have to click each message to make it go away
+        // If you want certain alerts to go away automatically, put the number of seconds below for that
+        // type of alert (e.g. "mentionTimeout: 5" will dismiss alerts of @mentions of you after 5 seconds)
+        mentionTimeout: 0,
+        wordTimeout: 0,
+        userTimeout: 0,
+    },
 
     //  /\ /\                                /\ /\
     //  || ||   CHANGE SETTINGS ABOVE HERE   || ||
@@ -45,7 +79,7 @@ var TWatch = {
 
     messageArray: [],
     debugModeBool: true,
-
+    scriptVersion: 'v1.0.2'
 };
 
 
@@ -54,6 +88,10 @@ var TWatch = {
      DON'T CHANGE ANYTHING BELOW HERE
 
 *****************************************/
+
+// Store the user config in localStorage for this script version
+// This ensures we don't have any lost configs if the script gets updated
+localStorage.setItem('TWatchSettings:' + TWatch.scriptVersion, JSON.stringify(TWatch.config));
 
 // Include Alertify.js and styles
 // Learn more: http://alertifyjs.com/notifier.html
@@ -65,6 +103,7 @@ $("head").append (
 $("head").append (
     '<style>.alertify-notifier{z-index:99999;}</style>'
 );
+
 
 // Specify the alert defaults (most arean't changed, but don't edit this unless you know what you're doing. Stuff will break.)
 alertify.defaults = {
@@ -152,7 +191,7 @@ $(function(){
                 alertify.notify(
                     "<strong>You were mentioned!</strong><br />"+$message.closest('div.chat-line__message').text().replace(/(\d\d?\:\d\d)(.*)/g, "$1 - $2"),
                     'error',
-                    TWatch.mentionTimeout
+                    TWatch.config.mentionTimeout
                 );
             }
             else if($message.data('aTarget') == "chat-message-username"){
@@ -168,7 +207,7 @@ $(function(){
                     alertify.notify(
                         '<strong>Watched user!</strong><br />'+$message.closest('div.chat-line__message').text().replace(/(\d\d?\:\d\d)(.*)/g, "$1 - $2"),
                         'warning',
-                        TWatch.userTimeout
+                        TWatch.config.userTimeout
                     );
                 }
             }
@@ -187,7 +226,7 @@ $(function(){
                         alertify.notify(
                             '<strong>Watched word!</strong><br />'+$message.closest('div.chat-line__message').text().replace(/(\d\d?\:\d\d)(.*)/g, "$1 - $2"),
                             'notify',
-                            TWatch.wordTimeout
+                            TWatch.config.wordTimeout
                         );
                     }
 
@@ -209,9 +248,9 @@ $(function(){
     };
 
     TWatch.isWatchedUser = function(text){
-        for (var i = 0; i < TWatch.watchTheseUsers.length; i++)
+        for (var i = 0; i < TWatch.config.watchTheseUsers.length; i++)
         {
-            if(text.toUpperCase().trim() == TWatch.watchTheseUsers[i].toUpperCase().trim()){
+            if(text.toUpperCase().trim() == TWatch.config.watchTheseUsers[i].toUpperCase().trim()){
                 TWatch.logDebugMessage("Watched user!");
                 return true;
             }
@@ -219,8 +258,8 @@ $(function(){
     };
 
     TWatch.hasWatchedWord = function(text){
-        for (var i = 0; i < TWatch.watchTheseWords.length; i++) {
-            if(text.toUpperCase().trim().indexOf(TWatch.watchTheseWords[i].toUpperCase().trim()) > -1){
+        for (var i = 0; i < TWatch.config.watchTheseWords.length; i++) {
+            if(text.toUpperCase().trim().indexOf(TWatch.config.watchTheseWords[i].toUpperCase().trim()) > -1){
                 TWatch.logDebugMessage("Watched word!");
                 return true;
             }
