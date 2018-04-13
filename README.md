@@ -36,6 +36,6 @@ BUT: We might be able to get them back. Follow these steps:
     }
 ```
 
-   Hopefully this works, and I'm sorry if it didn't. Again, there's not a very good way to handle user configs when a script needs updating.
+Hopefully this works, and I'm sorry if it didn't. Again, there's not a very good way to handle user configs when a script needs updating.
 
-   If you have trouble, find me on Twitter @jakebathman or open an issue on GitHub at https://github.com/jakebathman/TWatch/issues
+If you have trouble, find me on Twitter @jakebathman or open an issue on GitHub at https://github.com/jakebathman/TWatch/issues
