@@ -1,5 +1,4 @@
-# TWatch
-## Twitch Chat Watcher
+# TWatch: Twitch Chat Watcher
 
 Ever wanted to be alerted when you're @mentioned, when one of your friends posts a message, or when someone mentions a giveaway?
 
