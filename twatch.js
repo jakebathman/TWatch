@@ -56,13 +56,13 @@ var TWatch = {
         // Any user here will be watched for a post (based on their name in-chat)
         // This is case-insensitive (e.g. "JaKebAThmAn" works for "jakebathman")
         watchTheseUsers: [
-            'ironrectangle', 'supertravtastic', 'ninja', 'dakotaz', 'drlupo', 'timthetatman', 'mrsdrlupo',
+            'jakebathman', 'drlupo',
         ],
 
         // Any word here will be watched in any chat message
         // This is also case-insensitive
         watchTheseWords: [
-            'bathman',
+            'giveaway', 'twitch prime',
         ],
 
         // By default, alerts will never auto-dismiss. This means you have to click each message to make it go away
@@ -71,6 +71,9 @@ var TWatch = {
         mentionTimeout: 0,
         wordTimeout: 0,
         userTimeout: 0,
+
+        // Other options and settings that you can change, but the defaults are probably fine
+        sendAlertOnLoad: true, // after the script is loaded, an alert is shown so that you know everything's working
     },
 
     //  /\ /\                                /\ /\
@@ -275,4 +278,12 @@ $(function(){
 
     // Remove old stuff every 10 minutes
     setInterval(TWatch.purgeEntries, 1000 * 60 * 10);
+
+    if(TWatch.config.sendAlertOnLoad === true){
+        alertify.notify(
+            '<strong>TWatch Is Ready!</strong><br />TWatch is locked and loaded, and will alert you for watched users, words, and @mentions (based on your settings).<br /><br /><strong>Need help? Go to <a href="https://github.com/jakebathman/TWatch" target="_blank">github.com/jakebathman/TWatch</a></strong><br /><br /><span style="font-size:10px;">(This box will close automagically)</span>',
+            'warning',
+            15
+        );
+    }
 });
