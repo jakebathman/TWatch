@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TWatch: Twitch Chat Watcher
 // @namespace    https://github.com/jakebathman/TWatch
-// @version      v1.1.0
+// @version      v1.2.0
 // @description  Watch Twitch chat for certain users, any @mentions of you, or certain watched words, and play a sound/alert when one is posted. HUGE thanks to ihavebeenasleep for his script AntiKappa, which was very helpful in building this one.
 // @author       Jake Bathman (Twitter: @jakebathman, Reddit: /u/ironrectangle, Twitch: jakebathman)
 // @supportURL   https://github.com/jakebathman/TWatch/issues
@@ -82,7 +82,7 @@ var TWatch = {
 
     messageArray: [],
     debugModeBool: true,
-    scriptVersion: 'v1.1.0'
+    scriptVersion: 'v1.2.0'
 };
 
 
