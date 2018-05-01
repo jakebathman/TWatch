@@ -98,12 +98,12 @@ localStorage.setItem('TWatchSettings:' + TWatch.scriptVersion, JSON.stringify(TW
 
 // Include Alertify.js and styles
 // Learn more: http://alertifyjs.com/notifier.html
-$("head").append (
+$("head").append(
     '<script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.11.1/build/alertify.min.js"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.11.1/build/css/alertify.min.css"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.11.1/build/css/themes/default.min.css"/>'
 );
 
 // If you're in theater mode, the normal alert box will be invisible (underneath the chat)
-$("head").append (
+$("head").append(
     '<style>.alertify-notifier{z-index:99999;}</style>'
 );
 
@@ -111,39 +111,39 @@ $("head").append (
 // Specify the alert defaults (most arean't changed, but don't edit this unless you know what you're doing. Stuff will break.)
 alertify.defaults = {
     // dialogs defaults
-    autoReset:true,
-    basic:false,
-    closable:true,
-    closableByDimmer:true,
-    frameless:false,
-    maintainFocus:true, // <== global default not per instance, applies to all dialogs
-    maximizable:true,
-    modal:true,
-    movable:true,
-    moveBounded:false,
-    overflow:true,
+    autoReset: true,
+    basic: false,
+    closable: true,
+    closableByDimmer: true,
+    frameless: false,
+    maintainFocus: true, // <== global default not per instance, applies to all dialogs
+    maximizable: true,
+    modal: true,
+    movable: true,
+    moveBounded: false,
+    overflow: true,
     padding: true,
-    pinnable:true,
-    pinned:true,
-    preventBodyShift:false, // <== global default not per instance, applies to all dialogs
-    resizable:true,
-    startMaximized:false,
-    transition:'pulse',
+    pinnable: true,
+    pinned: true,
+    preventBodyShift: false, // <== global default not per instance, applies to all dialogs
+    resizable: true,
+    startMaximized: false,
+    transition: 'pulse',
 
     // notifier defaults
-    notifier:{
+    notifier: {
         // auto-dismiss wait time (in seconds)
-        delay:30,
+        delay: 30,
         // default position
-        position:'bottom-right',
+        position: 'bottom-right',
         // adds a close button to notifier messages
         closeButton: true
     },
 
     // language resources
-    glossary:{
+    glossary: {
         // dialogs default title
-        title:'AlertifyJS',
+        title: 'AlertifyJS',
         // ok button text
         ok: 'OK',
         // cancel button text
@@ -151,39 +151,39 @@ alertify.defaults = {
     },
 
     // theme settings
-    theme:{
+    theme: {
         // class name attached to prompt dialog input textbox.
-        input:'ajs-input',
+        input: 'ajs-input',
         // class name attached to ok button
-        ok:'ajs-ok',
+        ok: 'ajs-ok',
         // class name attached to cancel button
-        cancel:'ajs-cancel'
+        cancel: 'ajs-cancel'
     }
 };
 
-$(function(){
+$(function () {
     'use strict';
 
     console.log('TWatch script loaded!');
 
-    TWatch.logDebugMessage = function(message){
-        if(TWatch.debugModeBool){
+    TWatch.logDebugMessage = function (message) {
+        if (TWatch.debugModeBool) {
             console.log("TWatch - " + message);
         }
     };
 
-    TWatch.mainLoop = function(){
+    TWatch.mainLoop = function () {
         TWatch.checkMessages();
     };
 
-    TWatch.checkMessages = function(){
+    TWatch.checkMessages = function () {
         var isMention = false;
 
         // Check for a mention or watched user first, and don't filter those ever
-        $('span.chat-author__display-name:not(.TWatchChecked), div.chat-line__message--mention-recipient:not(.TWatchChecked)').each(function(){
+        $('span.chat-author__display-name:not(.TWatchChecked), div.chat-line__message--mention-recipient:not(.TWatchChecked)').each(function () {
             var $message = $(this);
             var audioformsg = new Audio();
-            if($message.data('aTarget') == "chat-message-mention"){
+            if ($message.data('aTarget') == "chat-message-mention") {
                 // Play sound for @mentions
 
                 audioformsg.src = 'https://emoji-cheat-sheet.campfirenow.com/sounds/bell.mp3';
@@ -196,12 +196,11 @@ $(function(){
                     'error',
                     TWatch.config.mentionTimeout
                 );
-            }
-            else if($message.data('aTarget') == "chat-message-username"){
+            } else if ($message.data('aTarget') == "chat-message-username") {
                 $message.addClass('TWatchChecked');
                 $message.parent().addClass('TWatchChecked');
 
-                if(TWatch.isWatchedUser($message.text()) === true){
+                if (TWatch.isWatchedUser($message.text()) === true) {
                     // Play sound for watched users
 
                     audioformsg.src = 'https://jakebathman.com/sounds/robot-blip.mp3';
@@ -216,12 +215,12 @@ $(function(){
             }
         });
 
-        if (isMention === false){
-            $('div.chat-line__message > span:not(.TWatchChecked)').each(function(){
+        if (isMention === false) {
+            $('div.chat-line__message > span:not(.TWatchChecked)').each(function () {
                 var $message = $(this);
-                if($message.data('aTarget') == "chat-message-text"){
+                if ($message.data('aTarget') == "chat-message-text") {
                     var $parent = $message.parent();
-                    if(TWatch.hasWatchedWord($message.text())){
+                    if (TWatch.hasWatchedWord($message.text())) {
                         var audioformsg = new Audio();
                         audioformsg.src = 'https://jakebathman.com/sounds/robot-blip.mp3';
                         audioformsg.autoplay = true;
@@ -243,33 +242,33 @@ $(function(){
 
     };
 
-    TWatch.isMention = function(text){
-        if(text.toUpperCase().indexOf(TWatch.username) > -1){
+
+    TWatch.isMention = function (text) {
+        if (text.toUpperCase().indexOf(TWatch.username) > -1) {
             TWatch.logDebugMessage("Mention!");
             return true;
         }
     };
 
-    TWatch.isWatchedUser = function(text){
-        for (var i = 0; i < TWatch.config.watchTheseUsers.length; i++)
-        {
-            if(text.toUpperCase().trim() == TWatch.config.watchTheseUsers[i].toUpperCase().trim()){
+    TWatch.isWatchedUser = function (text) {
+        for (var i = 0; i < TWatch.config.watchTheseUsers.length; i++) {
+            if (text.toUpperCase().trim() == TWatch.config.watchTheseUsers[i].toUpperCase().trim()) {
                 TWatch.logDebugMessage("Watched user!");
                 return true;
             }
         }
     };
 
-    TWatch.hasWatchedWord = function(text){
+    TWatch.hasWatchedWord = function (text) {
         for (var i = 0; i < TWatch.config.watchTheseWords.length; i++) {
-            if(text.toUpperCase().trim().indexOf(TWatch.config.watchTheseWords[i].toUpperCase().trim()) > -1){
+            if (text.toUpperCase().trim().indexOf(TWatch.config.watchTheseWords[i].toUpperCase().trim()) > -1) {
                 TWatch.logDebugMessage("Watched word!");
                 return true;
             }
         }
     };
 
-    TWatch.purgeEntries = function(){
+    TWatch.purgeEntries = function () {
         TWatch.messageArray = [];
     };
 
@@ -279,7 +278,7 @@ $(function(){
     // Remove old stuff every 10 minutes
     setInterval(TWatch.purgeEntries, 1000 * 60 * 10);
 
-    if(TWatch.config.sendAlertOnLoad === true){
+    if (TWatch.config.sendAlertOnLoad === true) {
         alertify.notify(
             '<strong>TWatch Is Ready!</strong><br />TWatch is locked and loaded, and will alert you for watched users, words, and @mentions (based on your settings).<br /><br /><strong>Need help? Go to <a href="https://github.com/jakebathman/TWatch" target="_blank">github.com/jakebathman/TWatch</a></strong><br /><br /><span style="font-size:10px;">(This box will close automagically)</span>',
             'warning',
