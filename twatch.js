@@ -187,6 +187,7 @@ $(function () {
         // Check for a mention or watched user first, and don't filter those ever
         $('span.chat-author__display-name:not(.TWatchChecked), div.chat-line__message--mention-recipient:not(.TWatchChecked)').each(function () {
             var $message = $(this);
+            var messageText = $message.closest('div.chat-line__message').text().replace(/(\d\d?\:\d\d)(.*)/g, "$1 - $2");
             var audioformsg = new Audio();
             if ($message.data('aTarget') == "chat-message-mention") {
                 // Play sound for @mentions
@@ -197,7 +198,7 @@ $(function () {
                 $message.parent().addClass('TWatchChecked');
 
                 alertify.notify(
-                    "<strong>You were mentioned!</strong><br />"+$message.closest('div.chat-line__message').text().replace(/(\d\d?\:\d\d)(.*)/g, "$1 - $2"),
+                    "<strong>You were mentioned!</strong><br />" + TWatch.prepareText(messageText),
                     'error',
                     TWatch.config.mentionTimeout
                 );
@@ -212,7 +213,7 @@ $(function () {
                     audioformsg.autoplay = true;
 
                     alertify.notify(
-                        '<strong>Watched user!</strong><br />'+$message.closest('div.chat-line__message').text().replace(/(\d\d?\:\d\d)(.*)/g, "$1 - $2"),
+                        '<strong>Watched user!</strong><br />' + TWatch.prepareText(messageText),
                         'warning',
                         TWatch.config.userTimeout
                     );
@@ -223,6 +224,7 @@ $(function () {
         if (isMention === false) {
             $('div.chat-line__message > span:not(.TWatchChecked)').each(function () {
                 var $message = $(this);
+                var messageText = $message.closest('div.chat-line__message').text().replace(/(\d\d?\:\d\d)(.*)/g, "$1 - $2");
                 if ($message.data('aTarget') == "chat-message-text") {
                     var $parent = $message.parent();
                     if (TWatch.hasWatchedWord($message.text())) {
@@ -231,7 +233,7 @@ $(function () {
                         audioformsg.autoplay = true;
 
                         alertify.notify(
-                            '<strong>Watched word!</strong><br />'+$message.closest('div.chat-line__message').text().replace(/(\d\d?\:\d\d)(.*)/g, "$1 - $2"),
+                            '<strong>Watched word!</strong><br />' + TWatch.prepareText(messageText),
                             'notify',
                             TWatch.config.wordTimeout
                         );
@@ -247,6 +249,9 @@ $(function () {
 
     };
 
+    TWatch.prepareText = function (text) {
+        return text.replace(/\b(https?|ftp|file):\/\/[\-A-Za-z0-9+&@#\/%?=~_|!:,.;]*[\-A-Za-z0-9+&@#\/%=~_|]/, '<a href="$&" target="_blank">$&</a>');
+    };
 
     TWatch.isMention = function (text) {
         if (text.toUpperCase().indexOf(TWatch.username) > -1) {
