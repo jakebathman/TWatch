@@ -164,6 +164,11 @@ alertify.defaults = {
 $(function () {
     'use strict';
 
+    if (self !== top) {
+        // In an iframe, probably an ad modal, so let's quit
+        return;
+    }
+
     console.log('TWatch script loaded!');
 
     TWatch.logDebugMessage = function (message) {
@@ -279,6 +284,8 @@ $(function () {
     setInterval(TWatch.purgeEntries, 1000 * 60 * 10);
 
     if (TWatch.config.sendAlertOnLoad === true) {
+        // Make sure this isn't loaded into an ad iframe
+
         alertify.notify(
             '<strong>TWatch Is Ready!</strong><br />TWatch is locked and loaded, and will alert you for watched users, words, and @mentions (based on your settings).<br /><br /><strong>Need help? Go to <a href="https://github.com/jakebathman/TWatch" target="_blank">github.com/jakebathman/TWatch</a></strong><br /><br /><span style="font-size:10px;">(This box will close automagically)</span>',
             'warning',
