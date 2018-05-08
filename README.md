@@ -8,11 +8,13 @@ If you have any problems of suggestions, open a new issue: https://github.com/ja
 
 Happy streaming!
 
-## Tampermonkey
+## Installation (Tampermonkey)
 
 This is designed to be used with the Chrome extension Tampermonkey. 
 
-You can install it here: https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo
+First, install Tampermonkey here: https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo
+
+Then, install TWatch using this page: https://greasyfork.org/en/scripts/40597-twatch-twitch-chat-watcher
 
 ## How do I set my own users and words?
 1. In Chrome, click on the Tampermonkey extension icon 
