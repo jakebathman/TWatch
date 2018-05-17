@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TWatch: Twitch Chat Watcher
 // @namespace    https://github.com/jakebathman/TWatch
-// @version      v1.3.0
+// @version      v1.3.1
 // @description  Watch Twitch chat for certain users, any @mentions of you, or certain watched words, and play a sound/alert when one is posted. HUGE thanks to ihavebeenasleep for his script AntiKappa, which was very helpful in building this one.
 // @author       Jake Bathman (Twitter: @jakebathman, Reddit: /u/ironrectangle, Twitch: jakebathman)
 // @supportURL   https://github.com/jakebathman/TWatch/issues
@@ -82,7 +82,7 @@ var TWatch = {
 
     messageArray: [],
     debugModeBool: true,
-    scriptVersion: 'v1.3.0'
+    scriptVersion: 'v1.3.1'
 };
 
 
@@ -104,7 +104,7 @@ $("head").append(
 
 // If you're in theater mode, the normal alert box will be invisible (underneath the chat)
 $("head").append(
-    '<style>.alertify-notifier{z-index:99999;}.auto-close-timer{font-size:9px;opacity:.5;margin-bottom:-12px;margin-top:5px;}</style>'
+    '<style>.alertify-notifier{z-index:99999;}.auto-close-timer{font-size:9px;opacity:.5;margin-bottom:-12px;margin-top:5px;}.alertify-notifier a{word-wrap: break-word;text-decoration: underline;}.ajs-error a{color: cyan !important;}</style>'
 );
 
 
@@ -185,7 +185,7 @@ $(function () {
         var isMention = false;
 
         // Check for a mention or watched user first, and don't filter those ever
-        $('span.chat-author__display-name:not(.TWatchChecked), div.chat-line__message--mention-recipient:not(.TWatchChecked)').each(function () {
+        $('span.chat-author__display-name:not(.TWatchChecked), span.mention-fragment--recipient:not(.TWatchChecked)').each(function () {
             var $message = $(this);
             var messageText = $message.closest('div.chat-line__message').text().replace(/(\d\d?\:\d\d)(.*)/g, "$1 - $2");
             var audioformsg = new Audio();
